@@ -1,0 +1,5 @@
+*.iml
+.idea
+cache
+data
+docker-compose.yml

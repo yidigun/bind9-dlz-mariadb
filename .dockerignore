@@ -1,0 +1,10 @@
+.dockerignore
+.gitignore
+*.iml
+*.yml
+Dockerfile
+Makefile
+README.md
+cache
+data
+sql
