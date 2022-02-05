@@ -68,3 +68,11 @@ services:
 docker exec bind9-named rndc reload
 ```
 
+## Build Image
+
+I fail to build linux/arm64 image on x86_64 linux machine. I've built this multi-arch image on Docker Desktop for macOS.
+
+```shell
+make test   # build single-arch image using docker build for testing
+make TAG=... PUSH={yes|no} # build multi-arch image using docker buildx 
+```
