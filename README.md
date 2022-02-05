@@ -18,8 +18,8 @@ See https://github.com/yidigun/bind9-dlz-mariadb
 
 ### 1. Prepare Database
 
-See mariadb schema [sql/mariadb-schema.sql](sql/mariadb-schema.sql)
-and [sql/mariadb-example.sql](sql/mariadb-example.sql).
+See mariadb schema [sql/mariadb-schema.sql](https://github.com/yidigun/bind9-dlz-mariadb/blob/master/sql/mariadb-schema.sql)
+and [sql/mariadb-example.sql](https://github.com/yidigun/bind9-dlz-mariadb/blob/master/sql/mariadb-example.sql).
 
 ### 2. Run Daemon
 
@@ -47,8 +47,8 @@ services:
     image: docker.io/yidigun/bind9-dlz-mariadb:latest
     restart: unless-stopped
     ports:
-      - 53:53/udp
-      - 53:53/tcp
+      - "53:53/udp"
+      - "53:53/tcp"
     environment:
       - TZ=Asia/Seoul
       - LANG=ko_KR.UTF-8
