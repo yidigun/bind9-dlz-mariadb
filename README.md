@@ -12,13 +12,13 @@ See https://www.isc.org/bind/ and https://www.mozilla.org/en-US/MPL/2.0/
 
 It's just free. (Public Domain)
 
-See https://github.com/yidigun/ubuntu-base
+See https://github.com/yidigun/bind9-dlz-mariadb
 
 ## Use Image
 
 ### 1. Prepare Database
 
-See mariadb [schema sql/mariadb-schema.sql](schema sql/mariadb-schema.sql)
+See mariadb schema [sql/mariadb-schema.sql](sql/mariadb-schema.sql)
 and [sql/mariadb-example.sql](sql/mariadb-example.sql).
 
 ### 2. Run Daemon
