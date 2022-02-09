@@ -21,6 +21,12 @@ See https://github.com/yidigun/bind9-dlz-mariadb
 See mariadb schema [sql/mariadb-schema.sql](https://github.com/yidigun/bind9-dlz-mariadb/blob/master/sql/mariadb-schema.sql)
 and [sql/mariadb-example.sql](https://github.com/yidigun/bind9-dlz-mariadb/blob/master/sql/mariadb-example.sql).
 
+#### ER-Diagram
+
+See [https://www.erdcloud.com/d/bnTLRRGrmnzXqN8Ct](https://www.erdcloud.com/d/bnTLRRGrmnzXqN8Ct).
+
+![ERD](docs/erd-bind9-dlz-mariadb.png)
+
 ### 2. Run Daemon
 
 ```shell
@@ -70,7 +76,8 @@ docker exec bind9-named rndc reload
 
 ## Build Image
 
-I fail to build linux/arm64 image on x86_64 linux machine. I've built this multi-arch image on Docker Desktop for macOS.
+I fail to build linux/arm64 image on x86_64 linux machine.
+I've built this multi-arch image on Docker Desktop for macOS.
 
 ```shell
 make test   # build single-arch image using docker build for testing
