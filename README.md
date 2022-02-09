@@ -23,7 +23,7 @@ and [sql/mariadb-example.sql](https://github.com/yidigun/bind9-dlz-mariadb/blob/
 
 #### ER-Diagram
 
-See [https://www.erdcloud.com/d/bnTLRRGrmnzXqN8Ct](https://www.erdcloud.com/d/bnTLRRGrmnzXqN8Ct).
+See [https://www.erdcloud.com/d/ZzZmex5p3cWFo7xpx](https://www.erdcloud.com/d/ZzZmex5p3cWFo7xpx).
 
 ![ERD](docs/erd-bind9-dlz-mariadb.png)
 
