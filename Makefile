@@ -2,6 +2,7 @@ REPO			= docker.io
 IMG_NAME		= yidigun/bind9-dlz-mariadb
 
 TAG				= 9.16.1-0ubuntu2.9
+EXTRA_TAGS		= latest
 TEST_ARGS		= -v `pwd`/cache:/var/cache/bind \
 				  -v `pwd`/data:/var/lib/bind \
 				  -p 53:53/tcp \
@@ -44,11 +45,14 @@ $(TAG): $(BUILDER)
 	if [ "$(PUSH)" = "yes" ]; then \
 	  PUSH="--push"; \
 	fi; \
+	TAGS="-t $(REPO)/$(IMG_NAME):$(TAG)"; \
+	for t in $(EXTRA_TAGS); do \
+	  TAGS="$$TAGS -t $(REPO)/$(IMG_NAME):$$t"; \
+	done; \
 	CMD="docker buildx build \
 	    --builder $(BUILDER) --platform "$(PLATFORM)" \
 	    --build-arg IMG_NAME=$(IMG_NAME) --build-arg IMG_TAG=$(IMG_TAG) \
-	    $$BUILD_ARGS $$PUSH \
-	    -t $(REPO)/$(IMG_NAME):latest -t $(REPO)/$(IMG_NAME):$(IMG_TAG) \
+	    $$BUILD_ARGS $$PUSH $$TAGS \
 	    ."; \
 	echo $$CMD; \
 	eval $$CMD

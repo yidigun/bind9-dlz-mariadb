@@ -23,12 +23,14 @@ RUN mkdir -p /tmp/bind9 && \
     apt-get clean
 
 # Do build
-RUN cd `find /tmp/bind9 -mindepth 1 -maxdepth 1 -type d -name "bind9*"` && \
-    MYSQL_CONFIG=/usr/bin/mariadb_config \
-      su -s /bin/bash _apt -c ' \
-        dpkg-buildpackage \
-          --build=binary \
-          -e"Daekyu Lee <dklee@yidigun.com>"'
+ENV MYSQL_CONFIG=/usr/bin/mariadb_config
+RUN su -s /bin/bash _apt -c ' \
+    srcdir=`find /tmp/bind9 -mindepth 1 -maxdepth 1 -type d -name "bind9*" | head -1`;  \
+    echo $srcdir; \
+    cd $srcdir; \
+    dpkg-buildpackage \
+      --build=binary \
+      -e"Daekyu Lee <dklee@yidigun.com>"'
 
 # Collect packages
 RUN mkdir -p /tmp/deb && \
