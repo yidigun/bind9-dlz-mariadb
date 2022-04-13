@@ -1,19 +1,19 @@
 diff -Nuar bind9-9.16.1.orig/debian/changelog bind9-9.16.1/debian/changelog
---- bind9-9.16.1.orig/debian/changelog	2021-10-27 11:00:32.000000000 +0000
-+++ bind9-9.16.1/debian/changelog	2022-02-04 10:24:15.000000000 +0000
+--- bind9-9.16.1.orig/debian/changelog	2022-04-13 09:02:57.609845106 +0000
++++ bind9-9.16.1/debian/changelog	2022-04-13 09:08:07.273475119 +0000
 @@ -1,3 +1,9 @@
-+bind9 (1:9.16.1-0ubuntu2.9) focal; urgency=medium
++bind9 (1:9.16.1-0ubuntu2.10) focal; urgency=medium
 +
 +  * Enable DLZ plugin and link with mariadb client.
 +
-+ -- Daekyu Lee <dklee@yidigun.com>  Fri, 4 Feb 2021 18:59:33 +0900
++ -- Daekyu Lee <dklee@yidigun.com>  Wed, 13 Apr 2022 18:08:01 +0900
 +
- bind9 (1:9.16.1-0ubuntu2.9) focal-security; urgency=medium
- 
-   * SECURITY UPDATE: resolver performance degradation via lame cache abuse
+ bind9 (1:9.16.1-0ubuntu2.10) focal-security; urgency=medium
+
+   * SECURITY UPDATE: cache poisoning via bogus NS records
 diff -Nuar bind9-9.16.1.orig/debian/control bind9-9.16.1/debian/control
---- bind9-9.16.1.orig/debian/control	2020-09-28 10:27:51.000000000 +0000
-+++ bind9-9.16.1/debian/control	2022-02-04 10:24:15.000000000 +0000
+--- bind9-9.16.1.orig/debian/control	2022-04-13 09:02:57.609845106 +0000
++++ bind9-9.16.1/debian/control	2022-04-13 09:09:12.230031283 +0000
 @@ -31,7 +31,8 @@
                 pkg-config,
                 python3,
@@ -33,16 +33,16 @@ diff -Nuar bind9-9.16.1.orig/debian/control bind9-9.16.1/debian/control
           ${shlibs:Depends}
  Suggests: bind-doc,
 diff -Nuar bind9-9.16.1.orig/debian/extras/etc/named.conf bind9-9.16.1/debian/extras/etc/named.conf
---- bind9-9.16.1.orig/debian/extras/etc/named.conf	2019-12-17 08:42:05.000000000 +0000
-+++ bind9-9.16.1/debian/extras/etc/named.conf	2022-02-04 10:31:28.000000000 +0000
+--- bind9-9.16.1.orig/debian/extras/etc/named.conf	2022-04-13 09:02:57.609845106 +0000
++++ bind9-9.16.1/debian/extras/etc/named.conf	2022-04-13 09:09:42.334239876 +0000
 @@ -9,3 +9,4 @@
  include "/etc/bind/named.conf.options";
  include "/etc/bind/named.conf.local";
  include "/etc/bind/named.conf.default-zones";
 +include "/etc/bind/named.conf.dlz-mariadb";
 diff -Nuar bind9-9.16.1.orig/debian/rules bind9-9.16.1/debian/rules
---- bind9-9.16.1.orig/debian/rules	2021-04-27 11:15:23.000000000 +0000
-+++ bind9-9.16.1/debian/rules	2022-02-04 20:42:18.208813200 +0000
+--- bind9-9.16.1.orig/debian/rules	2022-04-13 09:02:57.609845106 +0000
++++ bind9-9.16.1/debian/rules	2022-04-13 09:10:13.942473542 +0000
 @@ -70,6 +70,7 @@
  		--enable-filter-aaaa \
  		--disable-native-pkcs11 \
