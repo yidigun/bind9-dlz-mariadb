@@ -1,12 +1,10 @@
-ARG IMG_NAME
-ARG IMG_TAG
-ARG LANG=ko_KR.UTF-8
-ARG TZ=Asia/Seoul
-
 FROM docker.io/yidigun/ubuntu-build:20.04 AS build
 
-ENV LANG=$LANG
-ENV TZ=$TZ
+ARG IMG_NAME
+ARG IMG_TAG
+
+ENV IMG_NAME=$IMG_NAME
+ENV IMG_TAG=$IMG_TAG
 
 # Download source, apply patch and install dependencies.
 COPY bind9-dlz-mariadb.patch /tmp
@@ -43,10 +41,12 @@ RUN mkdir -p /tmp/deb && \
 
 FROM docker.io/yidigun/ubuntu-base:20.04 AS product
 
+ARG IMG_NAME
+ARG IMG_TAG
+
 ENV IMG_NAME=$IMG_NAME
 ENV IMG_TAG=$IMG_TAG
-ENV LANG=$LANG
-ENV TZ=$TZ
+
 ENV MYSQL_HOST=localhost
 ENV MYSQL_PORT=3306
 ENV MYSQL_USERNAME=named

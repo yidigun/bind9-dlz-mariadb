@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# try to set locale and timezone
+if locale -a 2>/dev/null | grep -q "$LANG"; then
+  : do nothing
+else
+  locale-gen $LANG 2>/dev/null
+  update-locale LANG=$LANG 2>/dev/null
+fi
+if [ -n "$TZ" -a -f /usr/share/zoneinfo/$TZ ]; then
+  ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
+fi
+
 user=bind
 
 # mysql driver is not thread-safe, so threads must set to 1 !!

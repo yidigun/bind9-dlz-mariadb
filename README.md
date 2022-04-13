@@ -14,6 +14,12 @@ It's just free. (Public Domain)
 
 See https://github.com/yidigun/bind9-dlz-mariadb
 
+## Changelog
+
+* 2022-02-18 - Change default locale to en_US.UTF-8, timezone to UTC.
+               Locale and timezone is set automatically according to
+               ```$LANG``` and ```$TZ``` envoringment variables.
+
 ## Use Image
 
 ### 1. Prepare Database
@@ -32,6 +38,8 @@ See [https://www.erdcloud.com/d/ZzZmex5p3cWFo7xpx](https://www.erdcloud.com/d/Zz
 ```shell
 docker run -d \
   --name bind9-named \
+  -e LANG=ko_KR.UTF-8 \
+  -e TZ=Asia/Seoul \
   -e MYSQL_HOST=dbserver \
   -e MYSQL_PORT=3306 \
   -e MYSQL_USERNAME=named \

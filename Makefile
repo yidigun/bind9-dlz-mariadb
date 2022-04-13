@@ -1,13 +1,15 @@
 REPO			= docker.io
 IMG_NAME		= yidigun/bind9-dlz-mariadb
 
-TAG				= 9.16.1-0ubuntu2.9
+TAG				= 9.16.1-0ubuntu2.10
 EXTRA_TAGS		= latest
 TEST_ARGS		= -v `pwd`/cache:/var/cache/bind \
 				  -v `pwd`/data:/var/lib/bind \
 				  -p 53:53/tcp \
 				  -p 53:53/udp \
-				  -e MYSQL_HOST=dbserver
+				  -e MYSQL_HOST=dbserver \
+				  -e LANG=ko_KR.UTF-8 \
+				  -e TZ=Asia/Seoul
 
 IMG_TAG			= $(TAG)
 PUSH			= yes
