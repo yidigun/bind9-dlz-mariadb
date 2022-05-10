@@ -1,4 +1,4 @@
-FROM docker.io/yidigun/ubuntu-build:20.04 AS build
+FROM docker.io/yidigun/ubuntu-build:22.04 AS build
 
 ARG IMG_NAME
 ARG IMG_TAG
@@ -8,7 +8,8 @@ ENV IMG_TAG=$IMG_TAG
 
 # Download source, apply patch and install dependencies.
 COPY bind9-dlz-mariadb.patch /tmp
-RUN mkdir -p /tmp/bind9 && \
+RUN apt-get update && \
+    mkdir -p /tmp/bind9 && \
     chown _apt:nogroup /tmp/bind9 && \
     cd /tmp/bind9 && \
     su -s /bin/bash _apt -c ' \
@@ -17,7 +18,7 @@ RUN mkdir -p /tmp/bind9 && \
         patch -p1 </tmp/bind9-dlz-mariadb.patch' && \
     cd `find /tmp/bind9 -mindepth 1 -maxdepth 1 -type d -name "bind9*"` && \
     DEBIAN_FRONTEND=noninteractive \
-      apt-get -y install `dpkg-checkbuilddeps 2>&1 | sed -e 's/^.*://' -e 's/([^)]*)//g'` && \
+      apt-get -y --fix-missing install `dpkg-checkbuilddeps 2>&1 | sed -e 's/^.*://' -e 's/([^)]*)//g'` && \
     apt-get clean
 
 # Do build
@@ -39,7 +40,7 @@ RUN mkdir -p /tmp/deb && \
        /tmp/bind9/bind9-host_*.deb \
        /tmp/deb
 
-FROM docker.io/yidigun/ubuntu-base:20.04 AS product
+FROM docker.io/yidigun/ubuntu-base:22.04 AS product
 
 ARG IMG_NAME
 ARG IMG_TAG
@@ -56,8 +57,9 @@ ENV MYSQL_DBNAME=named
 RUN apt-get -y update && \
     DEBIAN_FRONTEND=noninteractive \
       apt-get -y install \
-        dns-root-data iproute2 netbase libmariadb3 libcap2 libjson-c4 liblmdb0 libmaxminddb0 \
-        libssl1.1 libxml2 libgssapi-krb5-2 libkrb5-3 libuv1 libedit2 python3-ply && \
+        adduser debconf dns-root-data iproute2 libc6 libcap2 libedit2 libgssapi-krb5-2 libidn2-0 \
+        libjson-c5 libkrb5-3 liblmdb0 libmaxminddb0 libnghttp2-14 libssl3 libuv1 libxml2 lsb-base \
+        netbase zlib1g libmariadb3 && \
     apt-get clean
 COPY --from=build /tmp/deb /tmp/deb
 RUN dpkg -i /tmp/deb/*.deb && \
