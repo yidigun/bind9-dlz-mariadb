@@ -2,4 +2,5 @@
 .idea
 cache
 data
+tmp
 docker-compose.yml

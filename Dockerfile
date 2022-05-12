@@ -8,7 +8,8 @@ ENV IMG_TAG=$IMG_TAG
 
 # Download source, apply patch and install dependencies.
 COPY bind9-dlz-mariadb.patch /tmp
-RUN mkdir -p /tmp/bind9 && \
+RUN apt-get update && \
+    mkdir -p /tmp/bind9 && \
     chown _apt:nogroup /tmp/bind9 && \
     cd /tmp/bind9 && \
     su -s /bin/bash _apt -c ' \
