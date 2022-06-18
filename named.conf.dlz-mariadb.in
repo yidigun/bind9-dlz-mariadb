@@ -2,49 +2,50 @@
 // http://bind-dlz.sourceforge.net/mysql_driver.html
 
 dlz "dlz-mariadb-zone" {
-    database "mysql
-        {host=MYSQL_HOST port=MYSQL_PORT user=MYSQL_USERNAME pass=MYSQL_PASSWORD dbname=MYSQL_DBNAME}
-        {SELECT '1' FROM zone_authority WHERE zone = '$zone$' AND deleted = 'N'}
-        {
-         WITH TTL AS (
-            SELECT ttl FROM zone_soa
-             WHERE zone = '$zone$'
-            UNION ALL
-            SELECT ttl FROM zone_soa
-             WHERE zone = '*'
-               AND NOT EXISTS (SELECT 1 FROM zone_soa WHERE zone = '$zone$' LIMIT 1)
-         )
-         SELECT S.ttl, 'SOA' type, NULL mx_priority,
-                CONCAT_WS(' ', S.origin, S.email, IFNULL(V.serial, CAST(CONCAT(DATE_FORMAT(CURDATE(), '%Y%m%d'), '01') AS DECIMAL)),
-                   S.refresh, S.retry, S.expire, S.minimum) data
-           FROM zone_soa S, zone_serial V
-          WHERE S.zone = '$zone$' AND ('$record$' = '@') AND V.zone = S.zone
-         UNION ALL
-         SELECT S.ttl, 'SOA' type, NULL mx_priority,
-                CONCAT_WS(' ', S.origin, S.email, IFNULL(V.serial, CAST(CONCAT(DATE_FORMAT(CURDATE(), '%Y%m%d'), '01') AS DECIMAL)),
-                    S.refresh, S.retry, S.expire, S.minimum) data
-           FROM zone_soa S, zone_serial V
-          WHERE S.zone = '*' AND ('$record$' = '@') AND V.zone = '$zone$'
-            AND NOT EXISTS (SELECT 1 FROM zone_soa WHERE zone = '$zone$')
-         UNION ALL
-         SELECT IFNULL(R.ttl, TTL.ttl) ttl, R.type, R.mx_priority,
-               (CASE WHEN R.type = 'TXT' THEN CONCAT('\"', R.data, '\"') ELSE R.data END) data
-           FROM zone_record R, zone_authority Z, TTL
-          WHERE R.zone = '$zone$' AND R.name = '$record$' AND Z.zone = R.zone
-         UNION ALL
-         SELECT IFNULL(R.ttl, TTL.ttl) ttl, R.type, R.mx_priority,
-                (CASE WHEN R.type = 'TXT' THEN CONCAT('\"', R.data, '\"') ELSE R.data END) data
-           FROM zone_record R, zone_authority Z, TTL
-          WHERE R.zone = '*' AND R.name = '$record$' AND Z.zone = '$zone$'
-            AND NOT EXISTS (SELECT 1 FROM zone_record WHERE zone = '$zone$' AND name = R.name AND type = R.type LIMIT 1)
-         UNION ALL
-         SELECT IFNULL(R.ttl, TTL.ttl) ttl, R.type, R.mx_priority,
-                (CASE WHEN R.type = 'TXT' THEN CONCAT('\"', R.data, '\"') ELSE R.data END) data
-           FROM zone_record R, zone_authority Z, TTL WHERE R.zone = '$zone$' AND R.name = '*' AND Z.zone = R.zone
-            AND NOT EXISTS (SELECT 1 FROM zone_record WHERE zone = '$zone$' AND name = '$record$' AND type = R.type LIMIT 1)
-        }
-        {}
-        {}
-        {}
-        {INSERT INTO zone_stat (zone, date, count) VALUES ('$zone$', CURDATE(), 1) ON DUPLICATE KEY UPDATE count = count + 1}";
+    database "dlopen /usr/lib/bind9/dlz_mysql_dynamic.so
+    {host=MYSQL_HOST port=MYSQL_PORT user=MYSQL_USERNAME pass=MYSQL_PASSWORD dbname=MYSQL_DBNAME}
+    {SELECT '1' FROM zone_authority WHERE zone = '$zone$' AND deleted = 'N'}
+    {
+     WITH TTL AS (
+        SELECT ttl FROM zone_soa
+         WHERE zone = '$zone$'
+        UNION ALL
+        SELECT ttl FROM zone_soa
+         WHERE zone = '*'
+           AND NOT EXISTS (SELECT 1 FROM zone_soa WHERE zone = '$zone$' LIMIT 1)
+     )
+     SELECT S.ttl, 'SOA' type, NULL mx_priority,
+            CONCAT_WS(' ', S.origin, S.email, IFNULL(V.serial, CAST(CONCAT(DATE_FORMAT(CURDATE(), '%Y%m%d'), '01') AS DECIMAL)),
+               S.refresh, S.retry, S.expire, S.minimum) data
+       FROM zone_soa S, zone_serial V
+      WHERE S.zone = '$zone$' AND ('$record$' = '@') AND V.zone = S.zone
+     UNION ALL
+     SELECT S.ttl, 'SOA' type, NULL mx_priority,
+            CONCAT_WS(' ', S.origin, S.email, IFNULL(V.serial, CAST(CONCAT(DATE_FORMAT(CURDATE(), '%Y%m%d'), '01') AS DECIMAL)),
+                S.refresh, S.retry, S.expire, S.minimum) data
+       FROM zone_soa S, zone_serial V
+      WHERE S.zone = '*' AND ('$record$' = '@') AND V.zone = '$zone$'
+        AND NOT EXISTS (SELECT 1 FROM zone_soa WHERE zone = '$zone$')
+     UNION ALL
+     SELECT IFNULL(R.ttl, TTL.ttl) ttl, R.type, R.mx_priority,
+           (CASE WHEN R.type = 'TXT' THEN CONCAT('\"', R.data, '\"') ELSE R.data END) data
+       FROM zone_record R, zone_authority Z, TTL
+      WHERE R.zone = '$zone$' AND R.name = '$record$' AND Z.zone = R.zone
+     UNION ALL
+     SELECT IFNULL(R.ttl, TTL.ttl) ttl, R.type, R.mx_priority,
+            (CASE WHEN R.type = 'TXT' THEN CONCAT('\"', R.data, '\"') ELSE R.data END) data
+       FROM zone_record R, zone_authority Z, TTL
+      WHERE R.zone = '*' AND R.name = '$record$' AND Z.zone = '$zone$'
+        AND NOT EXISTS (SELECT 1 FROM zone_record WHERE zone = '$zone$' AND name = R.name AND type = R.type LIMIT 1)
+     UNION ALL
+     SELECT IFNULL(R.ttl, TTL.ttl) ttl, R.type, R.mx_priority,
+            (CASE WHEN R.type = 'TXT' THEN CONCAT('\"', R.data, '\"') ELSE R.data END) data
+       FROM zone_record R, zone_authority Z, TTL WHERE R.zone = '$zone$' AND R.name = '*' AND Z.zone = R.zone
+        AND NOT EXISTS (SELECT 1 FROM zone_record WHERE zone = '$zone$' AND name = '$record$' AND type = R.type LIMIT 1)
+    }
+    {}
+    {}
+    {}
+    {INSERT INTO zone_stat (zone, date, count) VALUES ('$zone$', CURDATE(), 1) ON DUPLICATE KEY UPDATE count = count + 1}
+    ";
 };

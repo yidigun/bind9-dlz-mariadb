@@ -11,31 +11,48 @@ if [ -n "$TZ" -a -f /usr/share/zoneinfo/$TZ ]; then
   ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
 fi
 
-user=bind
-
-# mysql driver is not thread-safe, so threads must set to 1 !!
-# see http://bind-dlz.sourceforge.net/mysql_driver.html
-threads=1
-bind_opts="-n$threads -u$user -g"
-
-config_dir=/etc/bind
-
 MYSQL_HOST=${MYSQL_HOST:-localhost}
 MYSQL_PORT=${MYSQL_PORT:-3306}
 MYSQL_USERNAME=${MYSQL_USERNAME:-named}
 MYSQL_PASSWORD=${MYSQL_PASSWORD:-named}
 MYSQL_DBNAME=${MYSQL_DBNAME:-named}
 
+user=bind
+group=bind
+
+for d in /run/named /var/cache/bind /var/lib/bind; do
+  if [ ! -d $d ]; then
+    mkdir -p $d
+  fi
+  if [ ! -w $d ]; then
+    chown -R $user:$group $d
+  fi
+done
+
+# mysql driver is not thread-safe, so threads must set to 1 !!
+# see http://bind-dlz.sourceforge.net/mysql_driver.html
+threads=1
+bind_opts="-n$threads -u$user -g"
+config_dir=/etc/bind
+
+if [ ! -f $config_dir/named.conf.dlz-mariadb ]; then
+  sed \
+    -e "s/MYSQL_HOST/$MYSQL_HOST/g" \
+    -e "s/MYSQL_PORT/$MYSQL_PORT/g" \
+    -e "s/MYSQL_USERNAME/$MYSQL_USERNAME/g" \
+    -e "s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g" \
+    -e "s/MYSQL_DBNAME/$MYSQL_DBNAME/g" \
+    $config_dir/named.conf.dlz-mariadb.in >$config_dir/named.conf.dlz-mariadb
+fi
+if grep -q 'dlz-mariadb-zone' $config_dir/named.conf >/dev/null 2>&1; then
+  : do nothing
+else
+  echo "include \"$config_dir/named.conf.dlz-mariadb\";" >>$config_dir/named.conf
+fi
+
 CMD=$1; shift
 case $CMD in
   start|run)
-    sed \
-      -e "s/MYSQL_HOST/$MYSQL_HOST/g" \
-      -e "s/MYSQL_PORT/$MYSQL_PORT/g" \
-      -e "s/MYSQL_USERNAME/$MYSQL_USERNAME/g" \
-      -e "s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g" \
-      -e "s/MYSQL_DBNAME/$MYSQL_DBNAME/g" \
-      $config_dir/named.conf.dlz-mariadb.in >$config_dir/named.conf.dlz-mariadb
     exec /usr/sbin/named $bind_opts "$@"
     ;;
 
