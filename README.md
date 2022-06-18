@@ -16,7 +16,7 @@ See https://github.com/yidigun/bind9-dlz-mariadb
 
 ## Changelog
 
-* 2022-05-10 - Upgrade base image 20.04 to 22.04
+* 2022-06-18 - Upgrade base image 20.04 to 22.04 and ```bind``` upgraded to 9.18.
 * 2022-02-18 - Change default locale to en_US.UTF-8, timezone to UTC.
                Locale and timezone is set automatically according to
                ```$LANG``` and ```$TZ``` envoringment variables.
