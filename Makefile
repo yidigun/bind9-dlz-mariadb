@@ -1,7 +1,7 @@
 REPO			= docker.io
 IMG_NAME		= yidigun/bind9-dlz-mariadb
 
-TAG				= 9.18.1-1ubuntu1
+TAG				= 9.18.28-0ubuntu0.24.04.1
 EXTRA_TAGS		= latest
 TEST_ARGS		= -v `pwd`/cache:/var/cache/bind \
 				  -v `pwd`/data:/var/lib/bind \

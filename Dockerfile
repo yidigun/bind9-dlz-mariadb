@@ -1,4 +1,4 @@
-FROM docker.io/yidigun/ubuntu-build:22.04 AS build
+FROM docker.io/yidigun/ubuntu-build:24.04 AS build
 
 ARG IMG_NAME
 ARG IMG_TAG
@@ -19,7 +19,7 @@ RUN apt-get -y update && \
     make && \
     make install)
 
-FROM docker.io/yidigun/ubuntu-base:22.04 AS product
+FROM docker.io/yidigun/ubuntu-base:24.04 AS product
 
 ARG IMG_NAME
 ARG IMG_TAG

@@ -4,3 +4,4 @@ cache
 data
 tmp
 docker-compose.yml
+.vscode
